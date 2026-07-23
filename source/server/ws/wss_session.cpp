@@ -14,214 +14,37 @@ namespace WS {
 
 WSSSession::WSSSession(const std::shared_ptr<WSSServer>& server)
     : HTTP::HTTPSSession(server)
-{
-}
+{ __builtin_trap() /* STUB: not implemented */; }
 
 void WSSSession::onDisconnecting()
-{
-    // Disconnecting WebSocket
-    if (_ws_handshaked)
-    {
-        onWSDisconnecting();
-    }
-}
+{ __builtin_trap() /* STUB: not implemented */; }
 
 void WSSSession::onDisconnected()
-{
-    // Disconnect WebSocket
-    if (_ws_handshaked)
-    {
-        _ws_handshaked = false;
-        onWSDisconnected();
-    }
-
-    // Reset WebSocket upgrade HTTP request and response
-    _request.Clear();
-    _response.Clear();
-
-    // Clear WebSocket send/receive buffers
-    ClearWSBuffers();
-
-    // Initialize new WebSocket random nonce
-    InitWSNonce();
-}
+{ __builtin_trap() /* STUB: not implemented */; }
 
 void WSSSession::onReceived(const void* buffer, size_t size)
-{
-    // Check for WebSocket handshaked status
-    if (_ws_handshaked)
-    {
-        // Prepare receive frame
-        PrepareReceiveFrame(buffer, size);
-        return;
-    }
-
-    HTTPSSession::onReceived(buffer, size);
-}
+{ __builtin_trap() /* STUB: not implemented */; }
 
 void WSSSession::onReceivedRequestHeader(const HTTP::HTTPRequest& request)
-{
-    // Check for WebSocket handshaked status
-    if (_ws_handshaked)
-        return;
-
-    // Try to perform WebSocket upgrade
-    if (!PerformServerUpgrade(request, response()))
-    {
-        HTTPSSession::onReceivedRequestHeader(request);
-        return;
-    }
-}
+{ __builtin_trap() /* STUB: not implemented */; }
 
 void WSSSession::onReceivedRequest(const HTTP::HTTPRequest& request)
-{
-    // Check for WebSocket handshaked status
-    if (_ws_handshaked)
-    {
-        // Prepare receive frame from the remaining request body
-        auto body = _request.body();
-        PrepareReceiveFrame(body.data(), body.size());
-        return;
-    }
-
-    HTTPSSession::onReceivedRequest(request);
-}
+{ __builtin_trap() /* STUB: not implemented */; }
 
 void WSSSession::onReceivedRequestError(const HTTP::HTTPRequest& request, const std::string& error)
-{
-    // Check for WebSocket handshaked status
-    if (_ws_handshaked)
-    {
-        onError(asio::error::fault, "WebSocket error", error);
-        return;
-    }
-
-    HTTPSSession::onReceivedRequestError(request, error);
-}
+{ __builtin_trap() /* STUB: not implemented */; }
 
 std::string WSSSession::ReceiveText()
-{
-    std::string result;
-
-    if (!_ws_handshaked)
-        return result;
-
-    std::vector<uint8_t> cache;
-
-    // Receive WebSocket frame data
-    while (!_ws_final_received)
-    {
-        while (!_ws_frame_received)
-        {
-            size_t required = RequiredReceiveFrameSize();
-            cache.resize(required);
-            size_t received = HTTPSSession::Receive(cache.data(), required);
-            if (received != required)
-                return result;
-            PrepareReceiveFrame(cache.data(), received);
-        }
-        if (!_ws_final_received)
-            PrepareReceiveFrame(nullptr, 0);
-    }
-
-    // Copy WebSocket frame data
-    result.insert(result.end(), _ws_receive_final_buffer.data() + _ws_header_size, _ws_receive_final_buffer.data() + _ws_header_size + _ws_payload_size);
-    PrepareReceiveFrame(nullptr, 0);
-    return result;
-}
+{ __builtin_trap() /* STUB: not implemented */; }
 
 std::string WSSSession::ReceiveText(const CppCommon::Timespan& timeout)
-{
-    std::string result;
-
-    if (!_ws_handshaked)
-        return result;
-
-    std::vector<uint8_t> cache;
-
-    // Receive WebSocket frame data
-    while (!_ws_final_received)
-    {
-        while (!_ws_frame_received)
-        {
-            size_t required = RequiredReceiveFrameSize();
-            cache.resize(required);
-            size_t received = HTTPSSession::Receive(cache.data(), required, timeout);
-            if (received != required)
-                return result;
-            PrepareReceiveFrame(cache.data(), received);
-        }
-        if (!_ws_final_received)
-            PrepareReceiveFrame(nullptr, 0);
-    }
-
-    // Copy WebSocket frame data
-    result.insert(result.end(), _ws_receive_final_buffer.data() + _ws_header_size, _ws_receive_final_buffer.data() + _ws_header_size + _ws_payload_size);
-    PrepareReceiveFrame(nullptr, 0);
-    return result;
-}
+{ __builtin_trap() /* STUB: not implemented */; }
 
 std::vector<uint8_t> WSSSession::ReceiveBinary()
-{
-    std::vector<uint8_t> result;
-
-    if (!_ws_handshaked)
-        return result;
-
-    std::vector<uint8_t> cache;
-
-    // Receive WebSocket frame data
-    while (!_ws_final_received)
-    {
-        while (!_ws_frame_received)
-        {
-            size_t required = RequiredReceiveFrameSize();
-            cache.resize(required);
-            size_t received = HTTPSSession::Receive(cache.data(), required);
-            if (received != required)
-                return result;
-            PrepareReceiveFrame(cache.data(), received);
-        }
-        if (!_ws_final_received)
-            PrepareReceiveFrame(nullptr, 0);
-    }
-
-    // Copy WebSocket frame data
-    result.insert(result.end(), _ws_receive_final_buffer.data() + _ws_header_size, _ws_receive_final_buffer.data() + _ws_header_size + _ws_payload_size);
-    PrepareReceiveFrame(nullptr, 0);
-    return result;
-}
+{ __builtin_trap() /* STUB: not implemented */; }
 
 std::vector<uint8_t> WSSSession::ReceiveBinary(const CppCommon::Timespan& timeout)
-{
-    std::vector<uint8_t> result;
-
-    if (!_ws_handshaked)
-        return result;
-
-    std::vector<uint8_t> cache;
-
-    // Receive WebSocket frame data
-    while (!_ws_final_received)
-    {
-        while (!_ws_frame_received)
-        {
-            size_t required = RequiredReceiveFrameSize();
-            cache.resize(required);
-            size_t received = HTTPSSession::Receive(cache.data(), required, timeout);
-            if (received != required)
-                return result;
-            PrepareReceiveFrame(cache.data(), received);
-        }
-        if (!_ws_final_received)
-            PrepareReceiveFrame(nullptr, 0);
-    }
-
-    // Copy WebSocket frame data
-    result.insert(result.end(), _ws_receive_final_buffer.data() + _ws_header_size, _ws_receive_final_buffer.data() + _ws_header_size + _ws_payload_size);
-    PrepareReceiveFrame(nullptr, 0);
-    return result;
-}
+{ __builtin_trap() /* STUB: not implemented */; }
 
 } // namespace WS
 } // namespace CppServer

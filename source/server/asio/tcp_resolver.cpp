@@ -17,11 +17,7 @@ TCPResolver::TCPResolver(const std::shared_ptr<Service>& service)
       _strand(*_io_context),
       _strand_required(_service->IsStrandRequired()),
       _resolver(*_io_context)
-{
-    assert((service != nullptr) && "Asio service is invalid!");
-    if (service == nullptr)
-        throw CppCommon::ArgumentException("Asio service is invalid!");
-}
+{ __builtin_trap() /* STUB: not implemented */; }
 
 } // namespace Asio
 } // namespace CppServer

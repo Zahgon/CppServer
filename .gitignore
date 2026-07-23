@@ -25,3 +25,5 @@ modules/*
 .idea
 .vscode
 temp
+
+compile_commands.json
